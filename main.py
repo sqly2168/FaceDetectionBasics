@@ -9,6 +9,7 @@ cap = cv2.VideoCapture(0)
 # #képbeolvasás
 # kep = cv2.imread("C:\\Users\\SQLY\\Desktop\\ow.png")
 
+
 while True:
     # Kép beolvasása
     ret, kep = cap.read()
