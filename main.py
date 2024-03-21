@@ -1,14 +1,11 @@
 import cv2
+from sklearn.decomposition import PCA
 
 # Kaszkád fájl betöltése
-face_cascade = cv2.CascadeClassifier('C:\\Users\\SQLY\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python312\\site-packages\\cv2\\data\\haarcascade_frontalface_default.xml')
+face_cascade_default = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_alt.xml')
 
-# kamera definiálása (lrgtöbb gépnél a kamera indexe 1)
+# kamera definiálása (legtöbb gépnél a kamera indexe 0)
 cap = cv2.VideoCapture(0)
-
-# #képbeolvasás
-# kep = cv2.imread("C:\\Users\\SQLY\\Desktop\\ow.png")
-
 
 while True:
     # Kép beolvasása
@@ -18,11 +15,26 @@ while True:
     gray = cv2.cvtColor(kep, cv2.COLOR_BGR2GRAY)
 
     # Arcok észlelése
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
+    faces_detect = face_cascade_default.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
 
-    # Arcok rajzolása téglalapban
-    for (x, y, w, h) in faces:
-        cv2.rectangle(kep, (x, y), (x+w, y+h), (255, 0, 0), 2)
+    try:
+        for (x, y, w, h) in faces_detect:
+            face_extract = gray[y:y + h, x:x + w]  # Arc kivágása
+            arckep_meret = (100, 100)  # Arckép mérete
+            arckep = cv2.resize(face_extract, arckep_meret)  # Arckép átméretezése
+            arckep_vektor = arckep.flatten()  # Kép vektorizálása
+            pca = PCA(n_components=1)  # PCA objektum létrehozása
+            pca.fit(arckep_vektor.reshape(-1, 1))  # PCA illesztése az arckép vektorra
+            transzformalt_arckep = pca.transform(arckep_vektor.reshape(-1, 1))  # Transzformált arckép
+            jellemzok = transzformalt_arckep.flatten()  # Jellemzők kinyerése
+
+            print(f"Arckép jellemzők: {jellemzok}")
+
+            # Arcok rajzolása téglalapban (kék)
+            cv2.rectangle(kep, (x, y), (x + w, y + h), (255, 0, 0), 2)
+
+    except IndexError:
+        print("Nincs arc a képen.")
 
     # Kép megjelenítése
     cv2.imshow("Arcfelismerő valós időben", kep)
