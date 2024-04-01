@@ -7,6 +7,8 @@ face_cascade_default = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascad
 # kamera definiálása (legtöbb gépnél a kamera indexe 0)
 cap = cv2.VideoCapture(0)
 
+pca = PCA(n_components=1)  # PCA objektum létrehozása
+
 while True:
     # Kép beolvasása
     ret, kep = cap.read()
@@ -20,10 +22,9 @@ while True:
     try:
         for (x, y, w, h) in faces_detect:
             face_extract = gray[y:y + h, x:x + w]  # Arc kivágása
-            arckep_meret = (100, 100)  # Arckép mérete
+            arckep_meret = (150, 150)  # Arckép mérete
             arckep = cv2.resize(face_extract, arckep_meret)  # Arckép átméretezése
             arckep_vektor = arckep.flatten()  # Kép vektorizálása
-            pca = PCA(n_components=1)  # PCA objektum létrehozása
             pca.fit(arckep_vektor.reshape(-1, 1))  # PCA illesztése az arckép vektorra
             transzformalt_arckep = pca.transform(arckep_vektor.reshape(-1, 1))  # Transzformált arckép
             jellemzok = transzformalt_arckep.flatten()  # Jellemzők kinyerése
