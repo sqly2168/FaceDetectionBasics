@@ -22,7 +22,7 @@ while True:
     try:
         for (x, y, w, h) in faces_detect:
             face_extract = gray[y:y + h, x:x + w]  # Arc kivágása
-            arckep_meret = (150, 150)  # Arckép mérete
+            arckep_meret = (100, 100)  # Arckép mérete
             arckep = cv2.resize(face_extract, arckep_meret)  # Arckép átméretezése
             arckep_vektor = arckep.flatten()  # Kép vektorizálása
             pca.fit(arckep_vektor.reshape(-1, 1))  # PCA illesztése az arckép vektorra
