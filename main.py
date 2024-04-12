@@ -61,16 +61,14 @@ while True:
     # Kép beolvasása
     ret, kep = cap.read()
     gray = cv2.cvtColor(kep, cv2.COLOR_BGR2GRAY)
-    faces_detect = face_cascade_default.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
+    faces_detect = face_cascade_default.detectMultiScale(gray, scaleFactor=1.05, minNeighbors=6)
 
     if jellemzok is None:
         jellemzok = keresett_arc_jellemzok(kep) #jellemzok kinyerése csak az első képen
+        print(f"Arckép jellemzők: {jellemzok}")
 
     for (x, y, w, h) in faces_detect: 
         cv2.rectangle(kep, (x, y), (x + w, y + h), (0, 0, 0), 2)
-
-    print(f"Arckép jellemzők: {jellemzok}")
-
 
     # Kép megjelenítése
     cv2.imshow("Arcfelismerő valós időben", kep)

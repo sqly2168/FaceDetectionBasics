@@ -11,6 +11,7 @@ adatbazis_mappa = "C:\\Users\\SQLY\\Desktop\\egyi\\4F\\FacialRecognition_Basics\
 
 # Lista a jellemzők tárolására hogy később kiirassuk .csv fájlba
 adatbazis_jellemzok_lista = []
+detektalt_arcok_szama = 0
 
 for filename in os.listdir(adatbazis_mappa):
     if filename.endswith(".jpg"):
@@ -19,11 +20,12 @@ for filename in os.listdir(adatbazis_mappa):
         
         kep = cv2.imread(img_path)
         gray = cv2.cvtColor(kep, cv2.COLOR_BGR2GRAY)
-        faces_detect = face_cascade_default.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
+        faces_detect = face_cascade_default.detectMultiScale(gray, scaleFactor=1.05, minNeighbors=5)
         # Hibakeresés: Ellenőrizze a faces_detect változót
         if len(faces_detect) == 0:
             print(f"Nincs arc a(z) {filename} képen.")
         else:
+            detektalt_arcok_szama += len(faces_detect)
             for (x, y, w, h) in faces_detect:
                 face_extract = gray[y:y + h, x:x + w]
                 arckep_meret = (100, 100)
@@ -34,6 +36,8 @@ for filename in os.listdir(adatbazis_mappa):
                 adatbazis_jellemzok = transzformalt_arckep.flatten()  
 
                 adatbazis_jellemzok_lista.append(adatbazis_jellemzok) 
+
+print(f"Összesen {detektalt_arcok_szama} arcot detektáltunk.")
 
 # Jellemzők elmentése CSV fájlba
 with open('adatbazis_jellemzok.csv', mode='w', newline='') as file:
