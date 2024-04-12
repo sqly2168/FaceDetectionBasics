@@ -20,7 +20,7 @@ for filename in os.listdir(adatbazis_mappa):
         
         kep = cv2.imread(img_path)
         gray = cv2.cvtColor(kep, cv2.COLOR_BGR2GRAY)
-        faces_detect = face_cascade_default.detectMultiScale(gray, scaleFactor=1.05, minNeighbors=5)
+        faces_detect = face_cascade_default.detectMultiScale(gray, scaleFactor=1.07, minNeighbors=10)
         # Hibakeresés: Ellenőrizze a faces_detect változót
         if len(faces_detect) == 0:
             print(f"Nincs arc a(z) {filename} képen.")
