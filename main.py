@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 from sklearn.decomposition import PCA
 import math
 from jellemzok_kinyerve import adatbazis_jellemzok_lista
@@ -41,6 +42,10 @@ def euklideszi_tavolsag(vektor1, vektor2):
     Returns:
         float: Az euklidészi távolság.
     """
+    # Konvertálás lebegőpontos típusra, ha szükséges
+    vektor1 = np.array(vektor1, dtype=np.float64)
+    vektor2 = np.array(vektor2, dtype=np.float64)
+
     tavolsag = 0
     for i in range(len(vektor1)):
         tavolsag += (vektor1[i] - vektor2[i])**2
@@ -61,7 +66,7 @@ while True:
     # Kép beolvasása
     ret, kep = cap.read()
     gray = cv2.cvtColor(kep, cv2.COLOR_BGR2GRAY)
-    faces_detect = face_cascade_default.detectMultiScale(gray, scaleFactor=1.05, minNeighbors=6)
+    faces_detect = face_cascade_default.detectMultiScale(gray, scaleFactor=1.09, minNeighbors=8)
 
     if jellemzok is None:
         jellemzok = keresett_arc_jellemzok(kep) #jellemzok kinyerése csak az első képen
@@ -79,11 +84,9 @@ while True:
 
 # Minden adatbázisbeli képhez kiszámítja az euklidészi távolságot
 for adatbazis_jellemzok in adatbazis_jellemzok_lista:
-    tavolsag = euklideszi_tavolsag(jellemzok, adatbazis_jellemzok)
+    tavolsag = euklideszi_tavolsag(jellemzok, adatbazis_jellemzok[1:])
     print(f"Euklidészi távolság: {tavolsag}")
 
 
 cap.release()
 cv2.destroyAllWindows()
-
-
