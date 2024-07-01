@@ -20,10 +20,8 @@ for filename in os.listdir(adatbazis_mappa):
         img_path = os.path.join(adatbazis_mappa, filename)
         
         kep = cv2.imread(img_path)
-        gray1 = cv2.cvtColor(kep, cv2.COLOR_BGR2GRAY)
-        gray = cv2.normalize(gray1, None, 0, 255, cv2.NORM_MINMAX)  # Normalizálás
-        gray = cv2.equalizeHist(gray)  # Hisztogram kiegyenlítése
-        faces_detect = face_cascade_default.detectMultiScale(gray, scaleFactor=1.09, minNeighbors=8)
+        gray = cv2.cvtColor(kep, cv2.COLOR_BGR2GRAY)
+        faces_detect = face_cascade_default.detectMultiScale(gray, scaleFactor=1.07, minNeighbors=10)
         # Hibakeresés: Ellenőrizze a faces_detect változót
         '''
         #--------------------
@@ -64,4 +62,5 @@ print(f"Összesen {detektalt_arcok_szama} arcot detektáltunk.")
 with open('adatbazis_jellemzok.csv', mode='w', newline='') as file:
     writer = csv.writer(file)
     writer.writerows(adatbazis_jellemzok_lista)
+
     
